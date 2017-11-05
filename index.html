@@ -26,12 +26,16 @@
 			#mainContent {
 				padding: 16px;
 				border: 1px solid blue;
-				flex-direction: row;
+				flex-direction: column;
 				flex: 1;
 			}
 			
 			div {
 				display: flex;
+			}
+			
+			header {
+				border: 1px solid red;
 			}
 		</style>
 
@@ -39,19 +43,30 @@
 
 	<body>
 		<div id="mainContent">
-			<div style="flex: 4;margin-right: 16px;flex-direction: column;">
-				<textarea id="jsonTextarea" name="" rows="" cols="" style="flex: 1;" placeholder="填写json">{"aaa":""}</textarea>
-				<input type="text" name="prefix" id="prefix" value="HXSome" style="height: 40px;" placeholder="前缀" />
-				<input type="text" name="baseclass" id="baseclass" value="Model" style="height: 40px;" placeholder="基类" />
-				<input type="button" name="" id="" value="生成" onclick="generate()" style="height: 40px;" />
-			</div>
-			<div style="flex: 6;flex-direction: column;">
-				<textarea id="interface" name="" rows="" cols="" style="flex: 1;margin-bottom: 16px;"></textarea>
-				<textarea id="implementation" name="" rows="" cols="" style="flex: 2;"></textarea>
+			<header style="margin-bottom: 16px;border: 1px solid gray;">json转Objective-C Model代码生成器<br>改进自json加速器.<br>新增特性:数组增加泛型,单文件,多维的正确处理</header>
+			<div style="flex-direction: row;flex: 1;">
+				<div style="flex: 4;margin-right: 16px;flex-direction: column;">
+					<textarea id="jsonTextarea" name="" rows="" cols="" style="flex: 1;" placeholder="填写json"></textarea>
+					<div style="height: 40px;flex-direction: row;align-items: center;">
+						<label style="font-size: 14px;">填写前缀</label>
+						<input type="text" name="prefix" id="prefix" style="flex: 1;align-self: stretch;" placeholder="前缀=公司前缀+接口名" />
+					</div>
+					<div style="height: 40px;flex-direction: row;align-items: center;">
+						<label style="font-size: 14px;">填写基类</label>
+						<input type="text" name="baseclass" id="baseclass" style="flex: 1;align-self: stretch;" placeholder="通常填写'Model'" />
+					</div>
+					<div style="height: 40px;flex-direction: row;align-items: center;">
+						<input type="button" name="" id="" value="生成" onclick="generate()" style="flex: 1;border: none;align-self: stretch;" />
+					</div>
+				</div>
+				<div style="flex: 6;flex-direction: column;">
+					<textarea id="interface" name="" rows="" cols="" style="flex: 1;margin-bottom: 16px;"></textarea>
+					<textarea id="implementation" name="" rows="" cols="" style="flex: 2;"></textarea>
+				</div>
 			</div>
 		</div>
 	</body>
-	<script src="jsonToOCModel.js"></script>	
+	<script src="jsonToOCModel.js"></script>
 	<script type="text/javascript">
 		function generate() {
 			var jsonString = document.getElementById("jsonTextarea").value;
@@ -61,9 +76,9 @@
 			try {
 				var jsonObj = JSON.parse(jsonString);
 				if(jsonObj) {
-					
-					let interface = objToOCHeader(jsonObj,prefixString,baseclassString);
-					let implementation = objToOCImplementation(jsonObj,prefixString,baseclassString);
+
+					let interface = objToOCHeader(jsonObj, prefixString, baseclassString);
+					let implementation = objToOCImplementation(jsonObj, prefixString, baseclassString);
 
 					document.getElementById("interface").innerHTML = interface;
 					document.getElementById("implementation").innerHTML = implementation;
@@ -78,12 +93,6 @@
 				}
 			}
 
-		}
-
-		function testES6() {
-			const a = 'asd';
-			const b = `qwe ${a}`;
-			console.log(b);
 		}
 	</script>
 
