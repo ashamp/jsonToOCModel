@@ -41,7 +41,7 @@
 
 	</head>
 
-	<body>
+	<body onload="onload();">
 		<div id="mainContent">
 			<header style="margin-bottom: 16px;border: 1px solid gray;">json转Objective-C Model代码生成器<br>改进自json加速器.<br>新增特性:数组增加泛型,多维数组的正确处理,单文件</header>
 			<div style="flex-direction: row;flex: 1;">
@@ -92,7 +92,22 @@
 					throw error;
 				}
 			}
-
+		}
+		function onload() {
+			document.getElementById("jsonTextarea").innerHTML = `{
+    "someStr":"abc",
+    "someNumber":1.0,
+    "someBool":false,
+    "someObj":{"someObj":"xyz"},
+    "someObjArray":[{"someObj":"xyz"}],
+    "someStrArray":["a","b"],
+    "someMultiDimensionalArray":[[[[{"someObj":"xyz"}]]]],
+    "id":"illegalName",
+    "new":"illegalName"
+}`;
+			document.getElementById('prefix').value = 'XYZTestCase';
+			document.getElementById('baseclass').value = 'Model';
+			generate();
 		}
 	</script>
 

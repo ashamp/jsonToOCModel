@@ -3,6 +3,23 @@ let uppercaseFirst = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+//Objective-C关键字保护
+let OCKeywordDefence = key => {
+    if (typeof key === 'string') {
+        if (key==='id') {
+            return 'ID';
+        }
+        let OCKeywords = ['alloc','new','copy','mutableCopy'];
+        for (var index = 0; index < OCKeywords.length; index++) {
+            var keyword = OCKeywords[index];
+            if (key.startsWith(keyword)) {
+                return `the${uppercaseFirst(key)}`;
+            }
+        }
+    }
+    return key;
+}
+
 let shortClassName = false;
 
 //获取数组泛型字符串和最内层对象
@@ -108,6 +125,8 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
         if (jsonObj.hasOwnProperty(key)) {
             let element = jsonObj[key];
 
+            key = OCKeywordDefence(key);
+
             if (typeof element === 'string') {
                 lines.push(`@property (nonatomic, strong) NSString *${key};\r\n`);
             }
@@ -174,6 +193,7 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
     for (let key in jsonObj) {
         if (jsonObj.hasOwnProperty(key)) {
             let element = jsonObj[key];
+            key = OCKeywordDefence(key);
             const NSStringKey = `k${className}${uppercaseFirst(key)}`;
             if (typeof element === 'string') {
                 NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
