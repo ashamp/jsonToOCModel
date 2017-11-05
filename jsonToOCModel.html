@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Model生成器</title>
+
+		<style>
+			* {
+				margin: 0px;
+				padding: 0;
+				border: 1px solid red;
+				list-style: none;
+			}
+			
+			body,
+			#mainContent {
+				position: absolute;
+				left: 0px;
+				right: 0px;
+				top: 0px;
+				bottom: 0px;
+			}
+			
+			#mainContent {
+				padding: 16px;
+				border: 1px solid blue;
+				flex-direction: row;
+				flex: 1;
+			}
+			
+			div {
+				display: flex;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="mainContent">
+			<div style="flex: 4;margin-right: 16px;flex-direction: column;">
+				<textarea id="jsonTextarea" name="" rows="" cols="" style="flex: 1;" placeholder="填写json">{"aaa":""}</textarea>
+				<input type="text" name="prefix" id="prefix" value="HXSome" style="height: 40px;" placeholder="前缀" />
+				<input type="text" name="baseclass" id="baseclass" value="Model" style="height: 40px;" placeholder="基类" />
+				<input type="button" name="" id="" value="生成" onclick="generate()" style="height: 40px;" />
+			</div>
+			<div style="flex: 6;flex-direction: column;">
+				<textarea id="interface" name="" rows="" cols="" style="flex: 1;margin-bottom: 16px;"></textarea>
+				<textarea id="implementation" name="" rows="" cols="" style="flex: 2;"></textarea>
+			</div>
+		</div>
+	</body>
+	<script src="jsonToOCModel.js"></script>	
+	<script type="text/javascript">
+		function generate() {
+			var jsonString = document.getElementById("jsonTextarea").value;
+			var prefixString = document.getElementById('prefix').value;
+			var baseclassString = document.getElementById('baseclass').value;
+
+			try {
+				var jsonObj = JSON.parse(jsonString);
+				if(jsonObj) {
+					
+					let interface = objToOCHeader(jsonObj,prefixString,baseclassString);
+					let implementation = objToOCImplementation(jsonObj,prefixString,baseclassString);
+
+					document.getElementById("interface").innerHTML = interface;
+					document.getElementById("implementation").innerHTML = implementation;
+				} else {
+					alert('解析失败');
+				}
+			} catch(error) {
+				if(error instanceof SyntaxError) {
+					alert("解析失败" + error.message);
+				} else {
+					throw error;
+				}
+			}
+
+		}
+
+		function testES6() {
+			const a = 'asd';
+			const b = `qwe ${a}`;
+			console.log(b);
+		}
+	</script>
+
+</html>
