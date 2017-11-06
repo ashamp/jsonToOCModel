@@ -125,16 +125,16 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
         if (jsonObj.hasOwnProperty(key)) {
             let element = jsonObj[key];
 
-            key = OCKeywordDefence(key);
+            let legalKey = OCKeywordDefence(key);
 
             if (typeof element === 'string') {
-                lines.push(`@property (nonatomic, strong) NSString *${key};\r\n`);
+                lines.push(`@property (nonatomic, strong) NSString *${legalKey};\r\n`);
             }
             else if (typeof element === 'number') {
-                lines.push(`@property (nonatomic, assign) double ${key};\r\n`);
+                lines.push(`@property (nonatomic, assign) double ${legalKey};\r\n`);
             }
             else if (typeof element === 'boolean') {
-                lines.push(`@property (nonatomic, assign) BOOL ${key};\r\n`);
+                lines.push(`@property (nonatomic, assign) BOOL ${legalKey};\r\n`);
             }
             else if (typeof element === 'object') {
 
@@ -144,13 +144,13 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
                 let subClassName = `${className}${uppercaseFirst(key)}`;
                 if (Array.isArray(element)) {
                     let { genericString, inner } = getGenericStringAndInnerObjWithArr(element, subClassName);
-                    lines.push(`@property (nonatomic, strong) ${genericString} *${key};\r\n`);
+                    lines.push(`@property (nonatomic, strong) ${genericString} *${legalKey};\r\n`);
                     if (typeof inner === 'object') {
                         lines.unshift(objToOCHeader(element, className, key));
                     }
                 }
                 else {
-                    lines.push(`@property (nonatomic, strong) ${subClassName} *${key};\r\n`);
+                    lines.push(`@property (nonatomic, strong) ${subClassName} *${legalKey};\r\n`);
                     lines.unshift(objToOCHeader(element, className, key));
                 }
             }
@@ -193,31 +193,29 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
     for (let key in jsonObj) {
         if (jsonObj.hasOwnProperty(key)) {
             let element = jsonObj[key];
-            key = OCKeywordDefence(key);
+            let legalKey = OCKeywordDefence(key);
             const NSStringKey = `k${className}${uppercaseFirst(key)}`;
+            NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);            
             if (typeof element === 'string') {
-                NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
-                initWithDictionaryLines.push(`self.${key} = [self objectOrNilForKey:${NSStringKey} fromDictionary:dict];`);
-                dictionaryRepresentationLines.push(`[mutableDict setValue:self.${key} forKey:${NSStringKey}];`);
-                initWithCoderLines.push(`self.${key} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
-                encodeWithCoderLines.push(`[aCoder encodeObject:_${key} forKey:${NSStringKey}];`);
-                copyWithZoneLines.push(`copy.${key} = [self.${key} copyWithZone:zone];`);
+                initWithDictionaryLines.push(`self.${legalKey} = [self objectOrNilForKey:${NSStringKey} fromDictionary:dict];`);
+                dictionaryRepresentationLines.push(`[mutableDict setValue:self.${legalKey} forKey:${NSStringKey}];`);
+                initWithCoderLines.push(`self.${legalKey} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
+                encodeWithCoderLines.push(`[aCoder encodeObject:_${legalKey} forKey:${NSStringKey}];`);
+                copyWithZoneLines.push(`copy.${legalKey} = [self.${legalKey} copyWithZone:zone];`);
             }
             else if (typeof element === 'number') {
-                NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
-                initWithDictionaryLines.push(`self.${key} = [[self objectOrNilForKey:${NSStringKey} fromDictionary:dict] doubleValue];`);
-                dictionaryRepresentationLines.push(`[mutableDict setValue:[NSNumber numberWithDouble:self.${key}] forKey:${NSStringKey}];`);
-                initWithCoderLines.push(`self.${key} = [aDecoder decodeDoubleForKey:${NSStringKey}];`);
-                encodeWithCoderLines.push(`[aCoder encodeDouble:_${key} forKey:${NSStringKey}];`);
-                copyWithZoneLines.push(`copy.${key} = self.${key};`);
+                initWithDictionaryLines.push(`self.${legalKey} = [[self objectOrNilForKey:${NSStringKey} fromDictionary:dict] doubleValue];`);
+                dictionaryRepresentationLines.push(`[mutableDict setValue:[NSNumber numberWithDouble:self.${legalKey}] forKey:${NSStringKey}];`);
+                initWithCoderLines.push(`self.${legalKey} = [aDecoder decodeDoubleForKey:${NSStringKey}];`);
+                encodeWithCoderLines.push(`[aCoder encodeDouble:_${legalKey} forKey:${NSStringKey}];`);
+                copyWithZoneLines.push(`copy.${legalKey} = self.${legalKey};`);
             }
             else if (typeof element === 'boolean') {
-                NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
-                initWithDictionaryLines.push(`self.${key} = [[self objectOrNilForKey:${NSStringKey} fromDictionary:dict] boolValue];`);
-                dictionaryRepresentationLines.push(`[mutableDict setValue:[NSNumber numberWithBool:self.${key}] forKey:${NSStringKey}];`);
-                initWithCoderLines.push(`self.${key} = [aDecoder decodeBoolForKey:${NSStringKey}];`);
-                encodeWithCoderLines.push(`[aCoder encodeBool:_${key} forKey:${NSStringKey}];`);
-                copyWithZoneLines.push(`copy.${key} = self.${key};`);
+                initWithDictionaryLines.push(`self.${legalKey} = [[self objectOrNilForKey:${NSStringKey} fromDictionary:dict] boolValue];`);
+                dictionaryRepresentationLines.push(`[mutableDict setValue:[NSNumber numberWithBool:self.${legalKey}] forKey:${NSStringKey}];`);
+                initWithCoderLines.push(`self.${legalKey} = [aDecoder decodeBoolForKey:${NSStringKey}];`);
+                encodeWithCoderLines.push(`[aCoder encodeBool:_${legalKey} forKey:${NSStringKey}];`);
+                copyWithZoneLines.push(`copy.${legalKey} = self.${legalKey};`);
             }
             else if (typeof element === 'object') {
 
@@ -228,26 +226,24 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
                 if (Array.isArray(element)) {
                     let { initWithDictionary, dictionaryRepresentation, inner } = getIterateLinesAndInnerObjWithArr(element, subClassName, key, NSStringKey);
 
-                    NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
                     initWithDictionaryLines.push(initWithDictionary);
                     dictionaryRepresentationLines.push(dictionaryRepresentation);
                     if (typeof inner === 'object') {
                         lines.unshift(objToOCImplementation(element, className, key));
                     }
-                    initWithCoderLines.push(`self.${key} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
-                    encodeWithCoderLines.push(`[aCoder encodeObject:_${key} forKey:${NSStringKey}];`);
-                    copyWithZoneLines.push(`copy.${key} = [self.${key} copyWithZone:zone];`);
+                    initWithCoderLines.push(`self.${legalKey} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
+                    encodeWithCoderLines.push(`[aCoder encodeObject:_${legalKey} forKey:${NSStringKey}];`);
+                    copyWithZoneLines.push(`copy.${legalKey} = [self.${legalKey} copyWithZone:zone];`);
                 }
                 else {
 
-                    NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
-                    initWithDictionaryLines.push(`self.${key} = [${subClassName} modelObjectWithDictionary:[dict objectForKey:${NSStringKey}]];`);
-                    dictionaryRepresentationLines.push(`[mutableDict setValue:[self.${key} dictionaryRepresentation] forKey:${NSStringKey}];`);
-                    initWithCoderLines.push(`self.${key} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
-                    encodeWithCoderLines.push(`[aCoder encodeObject:_${key} forKey:${NSStringKey}];`);
-                    copyWithZoneLines.push(`copy.${key} = [self.${key} copyWithZone:zone];`);
+                    initWithDictionaryLines.push(`self.${legalKey} = [${subClassName} modelObjectWithDictionary:[dict objectForKey:${NSStringKey}]];`);
+                    dictionaryRepresentationLines.push(`[mutableDict setValue:[self.${legalKey} dictionaryRepresentation] forKey:${NSStringKey}];`);
+                    initWithCoderLines.push(`self.${legalKey} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
+                    encodeWithCoderLines.push(`[aCoder encodeObject:_${legalKey} forKey:${NSStringKey}];`);
+                    copyWithZoneLines.push(`copy.${legalKey} = [self.${legalKey} copyWithZone:zone];`);
 
-                    lines.unshift(objToOCImplementation(element, className, key));
+                    lines.unshift(objToOCImplementation(element, className, legalKey));
                 }
             }
         }
