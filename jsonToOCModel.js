@@ -156,8 +156,8 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
             }
         }
     }
-    lines.push(`\r\n@end\r\n\r\n`);
-
+    lines.push(`\r\n+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;\r\n- (instancetype)initWithDictionary:(NSDictionary *)dict;\r\n- (NSDictionary *)dictionaryRepresentation;\r\n@end\r\n\r\n`);
+    
     let linesOutput = lines.join('');
 
     return linesOutput;
