@@ -79,9 +79,10 @@
 
 					let interface = objToOCHeader(jsonObj, prefixString, baseclassString);
 					let implementation = objToOCImplementation(jsonObj, prefixString, baseclassString);
-
-					document.getElementById("interface").innerHTML = interface;
-					document.getElementById("implementation").innerHTML = implementation;
+					let pretty = JSON.stringify(jsonObj,null,2);
+					document.getElementById("jsonTextarea").value = pretty;
+					document.getElementById("interface").value = interface;
+					document.getElementById("implementation").value = implementation;
 				} else {
 					alert('解析失败');
 				}
@@ -94,7 +95,7 @@
 			}
 		}
 		function onload() {
-			document.getElementById("jsonTextarea").innerHTML = `{
+			document.getElementById("jsonTextarea").value = `{
     "someStr":"abc",
     "someNumber":1.0,
     "someBool":false,
