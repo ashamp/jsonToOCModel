@@ -46,7 +46,7 @@
 			<header style="margin-bottom: 16px;border: 1px solid gray;">json转Objective-C Model代码生成器<br>改进自<a href="https://itunes.apple.com/cn/app/json-accelerator/id1198949505?mt=12" target="_blank">json加速器</a>.<br>新增特性:数组增加泛型,多维数组的正确处理,单文件</header>
 			<div style="flex-direction: row;flex: 1;">
 				<div style="flex: 4;margin-right: 16px;flex-direction: column;">
-					<textarea id="jsonTextarea" name="" rows="" cols="" style="flex: 1;" placeholder="填写json"></textarea>
+					<textarea id="jsonTextarea" name="" rows="" cols="" spellcheck="false" style="flex: 1;resize: none;" placeholder="填写json"></textarea>
 					<div style="height: 40px;flex-direction: row;align-items: center;">
 						<label style="font-size: 14px;">填写前缀</label>
 						<input type="text" name="prefix" id="prefix" style="flex: 1;align-self: stretch;" placeholder="前缀=公司前缀+接口名" />
@@ -60,8 +60,8 @@
 					</div>
 				</div>
 				<div style="flex: 6;flex-direction: column;">
-					<textarea id="interface" name="" rows="" cols="" style="flex: 1;margin-bottom: 16px;"></textarea>
-					<textarea id="implementation" name="" rows="" cols="" style="flex: 2;"></textarea>
+					<textarea id="interface" name="" rows="" cols="" spellcheck="false" style="flex: 1;margin-bottom: 16px;resize: none;"></textarea>
+					<textarea id="implementation" name="" rows="" cols="" spellcheck="false" style="flex: 2;resize: none;"></textarea>
 				</div>
 			</div>
 		</div>
@@ -77,11 +77,11 @@
 				var jsonObj = JSON.parse(jsonString);
 				if(jsonObj) {
 
-					let interface = objToOCHeader(jsonObj, prefixString, baseclassString);
+					let interfaceStr = objToOCHeader(jsonObj, prefixString, baseclassString);
 					let implementation = objToOCImplementation(jsonObj, prefixString, baseclassString);
 					let pretty = JSON.stringify(jsonObj,null,2);
 					document.getElementById("jsonTextarea").value = pretty;
-					document.getElementById("interface").value = interface;
+					document.getElementById("interface").value = interfaceStr;
 					document.getElementById("implementation").value = implementation;
 				} else {
 					alert('解析失败');
