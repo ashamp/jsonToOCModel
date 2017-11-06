@@ -89,7 +89,7 @@ let getIterateLinesAndInnerObjWithArr = (arr, className, key, NSStringKey) => {
             initWithDictionaryLines.unshift(`for (NSObject *obj in array) {\r\nif ([obj isKindOfClass:[NSArray class]]) {\r\nNSArray *array = (NSArray *)obj;\r\nNSMutableArray *array${count} = [NSMutableArray new];`);
             initWithDictionaryLines.push(`[array${count - 1} addObject:array${count}];\r\n}\r\n}`);
             dictionaryRepresentationLines.unshift(`for (NSArray *array${count} in array${count - 1}) {\r\nNSMutableArray *mArray${count} = [NSMutableArray new];`);
-            dictionaryRepresentationLines.push(`[mArray${count - 1} addObject:array${count}];\r\n}`);
+            dictionaryRepresentationLines.push(`[mArray${count - 1} addObject:mArray${count}];\r\n}`);
             count--;
         }
 
@@ -99,7 +99,7 @@ let getIterateLinesAndInnerObjWithArr = (arr, className, key, NSStringKey) => {
         dictionaryRepresentationLines.push(`[mutableDict setValue:[NSArray arrayWithArray:mArray0] forKey:${NSStringKey}];\r\n}`);
     } else {
         initWithDictionaryLines.push(`self.${key} = [self objectOrNilForKey:${NSStringKey} fromDictionary:dict];`);
-        dictionaryRepresentationLines.push(``);
+        dictionaryRepresentationLines.push(`[mutableDict setValue:self.${key} forKey:${NSStringKey}];`);
     }
 
 
