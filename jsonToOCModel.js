@@ -121,6 +121,8 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
 
     lines.push(`@interface ${className} : NSObject <NSCoding, NSCopying>\r\n\r\n`);
 
+    lines.push(`/*\r\n ${JSON.stringify(jsonObj,null,2)} \r\n*/\r\n`);
+
     for (let key in jsonObj) {
         if (jsonObj.hasOwnProperty(key)) {
             let element = jsonObj[key];
