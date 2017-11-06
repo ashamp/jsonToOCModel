@@ -69,10 +69,29 @@
 	<script src="jsonToOCModel.js"></script>
 	<script type="text/javascript">
 		function generate() {
+			var prefixInput = document.getElementById('prefix');
+			var baseclassInput = document.getElementById('baseclass');
 			var jsonString = document.getElementById("jsonTextarea").value;
-			var prefixString = document.getElementById('prefix').value;
-			var baseclassString = document.getElementById('baseclass').value;
-
+			var prefixString = prefixInput.value.trim();
+			var baseclassString = baseclassInput.value.trim();
+			if (prefixString.length === 0) {
+				prefixInput.style.border = '2px solid red'; 
+				alert('请填写前缀');
+				prefixInput.focus();
+				return ;
+			}
+			else {
+				document.getElementById('prefix').style.border = '';
+			}
+			if (baseclassString.length === 0) {
+				baseclassInput.style.border = '2px solid red'; 
+				alert('请填写基类');
+				baseclassInput.focus();
+				return ;
+			}
+			else {
+				baseclassInput.style.border = '';
+			}
 			try {
 				var jsonObj = JSON.parse(jsonString);
 				if(jsonObj) {
