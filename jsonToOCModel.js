@@ -301,31 +301,3 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
     return linesOutput;
 
 }
-
-// let jsonStr = `
-
-// {
-//     "ddd":["abc"],
-//     "someObjArray": [[[[
-//       {
-//         "someObj": "xyz"
-//       },
-//       {
-//         "someObj": "xyz"
-//       },
-//       {
-//         "someObj": "xyz"
-//       }
-//     ]]]]
-//   }
-
-// `;
-
-// let jsonObj = JSON.parse(jsonStr);
-// console.log(JSON.stringify(jsonObj));
-
-// let obj1 = keepOnlyOneElementInArray(jsonObj);
-// console.log(JSON.stringify(obj1));
-
-// let interfaceStr = objToOCHeaderLines(jsonObj, 'HXSome', 'Model');
-// console.log(interfaceStr);

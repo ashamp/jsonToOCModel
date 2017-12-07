@@ -115,15 +115,40 @@
 		}
 		function onload() {
 			document.getElementById("jsonTextarea").value = `{
-    "someStr":"abc",
-    "someNumber":1.0,
-    "someBool":false,
-    "someObj":{"someObj":"xyz"},
-    "someObjArray":[{"someObj":"xyz"},{"someObj":"xyz"}],
-    "someStrArray":["a","b"],
-    "someMultiDimensionalArray":[[[[{"someObj":"xyz"}]]]],
-    "id":"illegalName",
-    "new":"illegalName"
+  "someStr": "abc",
+  "someNumber": 1.0,
+  "someBool": false,
+  "someObj": {
+    "someObj": "xyz"
+  },
+  "someObjArray": [
+    {
+      "someObj": "xyz"
+    },
+    {
+      "someObj": "xyz"
+    }
+  ],
+  "someStrArray": [
+    "a",
+    "b"
+  ],
+  "someMultiDimensionalArray": [
+    [
+      [
+        [
+          {
+            "someObj": "xyz"
+          },
+          {
+            "someObj": "xyz"
+          }
+        ]
+      ]
+    ]
+  ],
+  "id": "illegalName",
+  "new": "illegalName"
 }`;
 			document.getElementById('prefix').value = 'XYZTestCase';
 			document.getElementById('baseclass').value = 'Model';
