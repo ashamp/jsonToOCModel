@@ -6,10 +6,10 @@ let uppercaseFirst = (string) => {
 //Objective-C关键字保护
 let OCKeywordDefence = key => {
     if (typeof key === 'string') {
-        if (key==='id') {
+        if (key === 'id') {
             return 'ID';
         }
-        let OCKeywords = ['alloc','new','copy','mutableCopy'];
+        let OCKeywords = ['alloc', 'new', 'copy', 'mutableCopy'];
         for (var index = 0; index < OCKeywords.length; index++) {
             var keyword = OCKeywords[index];
             if (key.startsWith(keyword)) {
@@ -108,6 +108,35 @@ let getIterateLinesAndInnerObjWithArr = (arr, className, key, NSStringKey) => {
     return { initWithDictionary, dictionaryRepresentation, inner };
 }
 
+let objToOCHeaderLines = (jsonObj, prefix, baseClass) => {
+    return objToOCHeader(keepOnlyOneElementInArray(jsonObj), prefix, baseClass);
+}
+
+//预处理,将传入的json对象中的数组中的多余元素去除,只保留1个
+let keepOnlyOneElementInArray = jsonObj => {
+    for (let key in jsonObj) {
+        if (jsonObj.hasOwnProperty(key)) {
+            
+            //遍历对象
+            let element = jsonObj[key];//取元素
+
+            if (typeof element === 'object') {//元素是对象
+                console.log(element);
+                if (Array.isArray(element)) {//元素是数组
+                    do {
+                        element.length = 1;
+                        element = element[0];
+                    } while ( Array.isArray(element));
+                }
+                else {//元素是对象且不是数组
+                    keepOnlyOneElementInArray(element);//递归
+                }
+            }
+        }
+    }
+    return jsonObj;
+}
+
 //对象转Objective-C头文件
 let objToOCHeader = (jsonObj, prefix, baseClass) => {
 
@@ -121,7 +150,7 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
 
     lines.push(`@interface ${className} : NSObject <NSCoding, NSCopying>\r\n\r\n`);
 
-    lines.push(`/*\r\n ${JSON.stringify(jsonObj,null,2)} \r\n*/\r\n`);
+    lines.push(`/*\r\n ${JSON.stringify(jsonObj, null, 2)} \r\n*/\r\n`);
 
     for (let key in jsonObj) {
         if (jsonObj.hasOwnProperty(key)) {
@@ -159,7 +188,7 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
         }
     }
     lines.push(`\r\n+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;\r\n- (instancetype)initWithDictionary:(NSDictionary *)dict;\r\n- (NSDictionary *)dictionaryRepresentation;\r\n@end\r\n\r\n`);
-    
+
     let linesOutput = lines.join('');
 
     return linesOutput;
@@ -197,7 +226,7 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
             let element = jsonObj[key];
             let legalKey = OCKeywordDefence(key);
             const NSStringKey = `k${className}${uppercaseFirst(key)}`;
-            NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);            
+            NSStringKeyLines.push(`NSString *const ${NSStringKey} = @"${key}";`);
             if (typeof element === 'string') {
                 initWithDictionaryLines.push(`self.${legalKey} = [self objectOrNilForKey:${NSStringKey} fromDictionary:dict];`);
                 dictionaryRepresentationLines.push(`[mutableDict setValue:self.${legalKey} forKey:${NSStringKey}];`);
@@ -272,3 +301,31 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
     return linesOutput;
 
 }
+
+// let jsonStr = `
+
+// {
+//     "ddd":["abc"],
+//     "someObjArray": [[[[
+//       {
+//         "someObj": "xyz"
+//       },
+//       {
+//         "someObj": "xyz"
+//       },
+//       {
+//         "someObj": "xyz"
+//       }
+//     ]]]]
+//   }
+
+// `;
+
+// let jsonObj = JSON.parse(jsonStr);
+// console.log(JSON.stringify(jsonObj));
+
+// let obj1 = keepOnlyOneElementInArray(jsonObj);
+// console.log(JSON.stringify(obj1));
+
+// let interfaceStr = objToOCHeaderLines(jsonObj, 'HXSome', 'Model');
+// console.log(interfaceStr);

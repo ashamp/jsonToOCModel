@@ -96,7 +96,7 @@
 				var jsonObj = JSON.parse(jsonString);
 				if(jsonObj) {
 
-					let interfaceStr = objToOCHeader(jsonObj, prefixString, baseclassString);
+					let interfaceStr = objToOCHeaderLines(jsonObj, prefixString, baseclassString);
 					let implementation = objToOCImplementation(jsonObj, prefixString, baseclassString);
 					let pretty = JSON.stringify(jsonObj,null,2);
 					document.getElementById("jsonTextarea").value = pretty;
@@ -119,7 +119,7 @@
     "someNumber":1.0,
     "someBool":false,
     "someObj":{"someObj":"xyz"},
-    "someObjArray":[{"someObj":"xyz"}],
+    "someObjArray":[{"someObj":"xyz"},{"someObj":"xyz"}],
     "someStrArray":["a","b"],
     "someMultiDimensionalArray":[[[[{"someObj":"xyz"}]]]],
     "id":"illegalName",
@@ -127,7 +127,7 @@
 }`;
 			document.getElementById('prefix').value = 'XYZTestCase';
 			document.getElementById('baseclass').value = 'Model';
-			generate();
+			// generate();
 		}
 	</script>
 
