@@ -121,16 +121,13 @@ let keepOnlyOneElementInArray = jsonObj => {
             let element = jsonObj[key];//取元素
 
             if (typeof element === 'object') {//元素是对象
-                console.log(element);
                 if (Array.isArray(element)) {//元素是数组
                     do {
                         element.length = 1;
                         element = element[0];
-                    } while ( Array.isArray(element));
+                    } while (Array.isArray(element));
                 }
-                else {//元素是对象且不是数组
-                    keepOnlyOneElementInArray(element);//递归
-                }
+                keepOnlyOneElementInArray(element);//递归
             }
         }
     }
@@ -187,7 +184,7 @@ let objToOCHeader = (jsonObj, prefix, baseClass) => {
             }
         }
     }
-    lines.push(`\r\n+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;\r\n- (instancetype)initWithDictionary:(NSDictionary *)dict;\r\n- (NSDictionary *)dictionaryRepresentation;\r\n@end\r\n\r\n`);
+    lines.push(`\r\n+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;\r\n- (instancetype)initWithDictionary:(NSDictionary *)dict;\r\n- (NSDictionary *)dictionaryRepresentation;\r\n\r\n@end\r\n\r\n`);
 
     let linesOutput = lines.join('');
 
