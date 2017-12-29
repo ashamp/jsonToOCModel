@@ -109,29 +109,24 @@ let getIterateLinesAndInnerObjWithArr = (arr, className, key, NSStringKey) => {
 }
 
 let objToOCHeaderLines = (jsonObj, prefix, baseClass) => {
-    return objToOCHeader(keepOnlyOneElementInArray(jsonObj), prefix, baseClass);
+    removeSurplusElement(jsonObj);
+    return objToOCHeader(jsonObj, prefix, baseClass);
 }
 
 //预处理,将传入的json对象中的数组中的多余元素去除,只保留1个
-let keepOnlyOneElementInArray = jsonObj => {
-    for (let key in jsonObj) {
-        if (jsonObj.hasOwnProperty(key)) {
-            
-            //遍历对象
-            let element = jsonObj[key];//取元素
 
-            if (typeof element === 'object') {//元素是对象
-                if (Array.isArray(element)) {//元素是数组
-                    do {
-                        element.length = 1;
-                        element = element[0];
-                    } while (Array.isArray(element));
-                }
-                keepOnlyOneElementInArray(element);//递归
+let removeSurplusElement = obj => {
+    if (Array.isArray(obj)) {
+        obj.length = 1;
+        removeSurplusElement(obj[0]);
+    }
+    else if (typeof obj === 'object') {
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                removeSurplusElement(obj[key])
             }
         }
     }
-    return jsonObj;
 }
 
 //对象转Objective-C头文件
