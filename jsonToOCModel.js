@@ -1,3 +1,10 @@
+//获取参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return decodeURI(r[2]); return null; //返回参数值
+}
+
 //大写转换
 let uppercaseFirst = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -110,7 +117,25 @@ let getIterateLinesAndInnerObjWithArr = (arr, className, key, NSStringKey) => {
 
 let objToOCHeaderLines = (jsonObj, prefix, baseClass) => {
     removeSurplusElement(jsonObj);
-    return objToOCHeader(jsonObj, prefix, baseClass);
+    const headerLines = objToOCHeader(jsonObj, prefix, baseClass);
+
+    const comment = makeComment('h', prefix, baseClass);
+    return comment + '#import <Foundation/Foundation.h>\r\n\r\n' + headerLines;
+}
+
+let makeComment = (suffix, prefix, baseClass) => {
+    const user = getUrlParam('user') || '__username__';
+    const company = getUrlParam('company') || '__company__';
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    const comment = `//
+//  ${prefix}${baseClass}.${suffix}
+//
+//  Created by ${user} on ${date}.
+//  Copyright © 2017年 ${company}. All rights reserved.
+//
+
+`;
+    return comment;
 }
 
 //预处理,将传入的json对象中的数组中的多余元素去除,只保留1个
@@ -290,6 +315,8 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
 
     let linesOutput = lines.join('\r\n');
 
-    return linesOutput;
+    const comment = makeComment('m', prefix, baseClass);
+    return comment + `#import "${prefix}${baseClass}.m"\r\n\r\n` + linesOutput;
+
 
 }
