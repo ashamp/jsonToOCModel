@@ -229,8 +229,8 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
 
     let className = `${prefix}${uppercaseFirst(baseClass)}`;
 
-    lines.push(`@interface ${className} ()\r\n- (id)objectOrNilForKey:(id)aKey fromDictionary:(NSDictionary *)dict;\r\n@end\r\n\r\n@implementation ${className}\r\n`);
-    lines.push(`+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict{\r\nreturn [[self alloc] initWithDictionary:dict];\r\n}`);
+    lines.push(`\r\n@interface ${className} ()\r\n\r\n- (id)objectOrNilForKey:(id)aKey fromDictionary:(NSDictionary *)dict;\r\n\r\n@end\r\n\r\n\r\n\r\n@implementation ${className}\r\n`);
+    lines.push(`+ (instancetype)modelObjectWithDictionary:(NSDictionary *)dict{\r\nreturn [[self alloc] initWithDictionary:dict];\r\n}\r\n`);
 
     initWithDictionaryLines.push(`- (instancetype)initWithDictionary:(NSDictionary *)dict{\r\nself = [super init];\r\nif(self && [dict isKindOfClass:[NSDictionary class]]) {\r\n`);
     dictionaryRepresentationLines.push(`- (NSDictionary *)dictionaryRepresentation{\r\nNSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];`);
@@ -297,16 +297,16 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
         }
     }
 
-    initWithDictionaryLines.push(`\r\n}\r\nreturn self;\r\n}`);
+    initWithDictionaryLines.push(`\r\n}\r\nreturn self;\r\n}\r\n`);
     dictionaryRepresentationLines.push(`return [NSDictionary dictionaryWithDictionary:mutableDict];\r\n}`);
-    initWithCoderLines.push(`return self;\r\n}`);
-    encodeWithCoderLines.push(`}`);
+    initWithCoderLines.push(`return self;\r\n}\r\n`);
+    encodeWithCoderLines.push(`}\r\n`);
     copyWithZoneLines.push(`}\r\nreturn copy;\r\n}`);
 
     lines.unshift(NSStringKeyLines.join('\r\n'));
     lines.push(initWithDictionaryLines.join('\r\n'));
     lines.push(dictionaryRepresentationLines.join('\r\n'));
-    lines.push(`\r\n- (NSString *)description{\r\nreturn [NSString stringWithFormat:@"%@", [self dictionaryRepresentation]];\r\n}\r\n\r\n#pragma mark - Helper Method\r\n- (id)objectOrNilForKey:(id)aKey fromDictionary:(NSDictionary *)dict{\r\nid object = [dict objectForKey:aKey];\r\nreturn [object isEqual:[NSNull null]] ? nil : object;\r\n}\r\n\r\n#pragma mark - NSCoding Methods\r\n`);
+    lines.push(`\r\n- (NSString *)description{\r\nreturn [NSString stringWithFormat:@"%@", [self dictionaryRepresentation]];\r\n}\r\n\r\n#pragma mark - Helper Method\r\n\r\n- (id)objectOrNilForKey:(id)aKey fromDictionary:(NSDictionary *)dict{\r\nid object = [dict objectForKey:aKey];\r\nreturn [object isEqual:[NSNull null]] ? nil : object;\r\n}\r\n\r\n#pragma mark - NSCoding Methods\r\n`);
     lines.push(initWithCoderLines.join('\r\n'));
     lines.push(encodeWithCoderLines.join('\r\n'));
     lines.push(copyWithZoneLines.join('\r\n'));
@@ -315,8 +315,13 @@ let objToOCImplementation = (jsonObj, prefix, baseClass) => {
 
     let linesOutput = lines.join('\r\n');
 
+    return linesOutput;
+}
+
+//对象转Objective-C实现文件
+let objToOCImplementationLines = (jsonObj, prefix, baseClass) => {
+    const implementationLines = objToOCImplementation(jsonObj, prefix, baseClass);
+
     const comment = makeComment('m', prefix, baseClass);
-    return comment + `#import "${prefix}${baseClass}.m"\r\n\r\n` + linesOutput;
-
-
+    return comment + `#import "${prefix}${baseClass}.h"\r\n\r\n` + implementationLines;
 }

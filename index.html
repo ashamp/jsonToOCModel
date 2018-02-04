@@ -102,7 +102,7 @@
 				if(jsonObj) {
 
 					let interfaceStr = objToOCHeaderLines(jsonObj, prefixString, baseclassString);
-					let implementation = objToOCImplementation(jsonObj, prefixString, baseclassString);
+					let implementation = objToOCImplementationLines(jsonObj, prefixString, baseclassString);
 					let pretty = JSON.stringify(jsonObj,null,2);
 					document.getElementById("formatedJsonTextarea").value = pretty;
 					document.getElementById("interface").value = interfaceStr;
