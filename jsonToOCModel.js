@@ -131,7 +131,7 @@ let makeComment = (suffix, prefix, baseClass) => {
 //  ${prefix}${baseClass}.${suffix}
 //
 //  Created by ${user} on ${date}.
-//  Copyright © 2017年 ${company}. All rights reserved.
+//  Copyright © ${date.slice(0,4)}年 ${company}. All rights reserved.
 //
 
 `;
