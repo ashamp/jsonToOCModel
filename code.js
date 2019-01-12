@@ -1,8 +1,11 @@
 
 $(function () {
-  console.log('loaded');
   //初始化
   (function init() {
+
+    let objcHerderStr = '';
+    let objcImplStr = '';
+
     let jsonTestCase = `{
 "someStr": "Input Your JSON In This Textarea",
 "someNumber": 1.2,
@@ -414,17 +417,19 @@ $(function () {
           //取是否有头部注释
           let haveComment = $('#commentCheckbox').prop('checked');
           //取是否NSCoding
-          let shouldNSCoding = $('#NSCodingCheckbox').prop('checked');;
-          let shouldNSCopying = $('#NSCopyingCheckbox').prop('checked');;
+          let shouldNSCoding = $('#NSCodingCheckbox').prop('checked');
+          let shouldNSCopying = $('#NSCopyingCheckbox').prop('checked');
           //生成头文件
-          let rootClass = $('#classNameTextField').val();;
-          let surfix = $('#suffixTextField').val();;
+          let rootClass = $('#classNameTextField').val();
+          let surfix = $('#suffixTextField').val();
           let objcHeaderCode = objToOCHeaderLines(jsonObj, rootClass, surfix, haveComment, shouldNSCoding, shouldNSCopying, company, user);
+          objcHerderStr = objcHeaderCode;
           let highlightObjcHeader = hljs.highlight('objectivec', objcHeaderCode);
           $('#objcHeaderCode').html(highlightObjcHeader.value);
 
           //生成实现文件
           let objcImplCode = objToOCImplementationLines(jsonObj, rootClass, surfix, haveComment, shouldNSCoding, shouldNSCopying, company, user);
+          objcImplStr = objcImplCode;
           let highlightObjcImpl = hljs.highlight('objectivec', objcImplCode);
           $('#objcImplCode').html(highlightObjcImpl.value);
         } else {
@@ -457,12 +462,10 @@ $(function () {
       let defaultValue = checked ? '1' : '0';
       let selector = '#' + checkBoxID;
       let strFromCookie = $.cookie(checkBoxID);
-      console.log(strFromCookie);
       if (strFromCookie === undefined || strFromCookie.length === 0) {
         $.cookie(checkBoxID, defaultValue);
       }
       checked = $.cookie(checkBoxID) === '1';
-      console.log($.cookie(checkBoxID));
       $(selector).prop('checked', checked);
       $(selector).on('change', function (e) {
         let checked = $(this).prop('checked') ? '1' : '0';
@@ -476,6 +479,21 @@ $(function () {
     checkBoxBinding('commentCheckbox', true);
 
     generate();
+
+    function copyToClipboard(text) {
+      var $temp = $("<textarea>");
+      $("body").append($temp);
+      $temp.val(text).select();
+      document.execCommand("copy");
+      $temp.remove();
+    }
+
+    $('#copyHeaderFileBtn').click(function () {
+      copyToClipboard(objcHerderStr);
+    });
+    $('#copyImplFileBtn').click(function () {
+      copyToClipboard(objcImplStr);
+    });
 
   })();
 });
