@@ -212,7 +212,7 @@ $(function () {
           let objToOCHeader = (jsonObj, prefix, baseClass, shouldNSCoding, shouldNSCopying) => {
 
             if (Array.isArray(jsonObj)) {
-              return objToOCHeader(jsonObj[0], prefix, baseClass,shouldNSCoding, shouldNSCopying);
+              return objToOCHeader(jsonObj[0], prefix, baseClass, shouldNSCoding, shouldNSCopying);
             }
 
             let lines = [];
@@ -259,12 +259,12 @@ $(function () {
                     let { genericString, inner } = getGenericStringAndInnerObjWithArr(element, subClassName);
                     lines.push(`@property (nonatomic, strong) ${genericString} *${legalKey};\r\n`);
                     if (typeof inner === 'object') {
-                      lines.unshift(objToOCHeader(element, className, key));
+                      lines.unshift(objToOCHeader(element, className, key, shouldNSCoding, shouldNSCopying));
                     }
                   }
                   else {
                     lines.push(`@property (nonatomic, strong) ${subClassName} *${legalKey};\r\n`);
-                    lines.unshift(objToOCHeader(element, className, key));
+                    lines.unshift(objToOCHeader(element, className, key, shouldNSCoding, shouldNSCopying));
                   }
                 }
               }
@@ -348,7 +348,7 @@ $(function () {
                     initWithDictionaryLines.push(initWithDictionary);
                     dictionaryRepresentationLines.push(dictionaryRepresentation);
                     if (typeof inner === 'object') {
-                      lines.unshift(objToOCImplementation(element, className, key));
+                      lines.unshift(objToOCImplementation(element, className, key, shouldNSCoding, shouldNSCopying));
                     }
                     initWithCoderLines.push(`    self.${legalKey} = [aDecoder decodeObjectForKey:${NSStringKey}];`);
                     encodeWithCoderLines.push(`    [aCoder encodeObject:_${legalKey} forKey:${NSStringKey}];`);
@@ -362,7 +362,7 @@ $(function () {
                     encodeWithCoderLines.push(`    [aCoder encodeObject:_${legalKey} forKey:${NSStringKey}];`);
                     copyWithZoneLines.push(`        copy.${legalKey} = [self.${legalKey} copyWithZone:zone];`);
 
-                    lines.unshift(objToOCImplementation(element, className, legalKey));
+                    lines.unshift(objToOCImplementation(element, className, legalKey, shouldNSCoding, shouldNSCopying));
                   }
                 }
               }
