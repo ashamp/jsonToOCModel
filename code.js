@@ -212,7 +212,7 @@ $(function () {
           let objToOCHeader = (jsonObj, prefix, baseClass, shouldNSCoding, shouldNSCopying) => {
 
             if (Array.isArray(jsonObj)) {
-              return objToOCHeader(jsonObj[0], prefix, baseClass);
+              return objToOCHeader(jsonObj[0], prefix, baseClass,shouldNSCoding, shouldNSCopying);
             }
 
             let lines = [];
@@ -286,7 +286,7 @@ $(function () {
           let objToOCImplementation = (jsonObj, prefix, baseClass, shouldNSCoding, shouldNSCopying) => {
 
             if (Array.isArray(jsonObj)) {
-              return objToOCImplementation(jsonObj[0], prefix, baseClass);
+              return objToOCImplementation(jsonObj[0], prefix, baseClass, shouldNSCoding, shouldNSCopying);
             }
 
             let lines = [];
