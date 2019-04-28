@@ -209,15 +209,15 @@ $(function () {
             return { initWithDictionary, dictionaryRepresentation, inner };
           };
           //对象转Objective-C头文件
-          let objToOCHeader = (jsonObj, prefix, baseClass, shouldNSCoding, shouldNSCopying) => {
+          let objToOCHeader = (jsonObj, rootClass, surfix, shouldNSCoding, shouldNSCopying) => {
 
             if (Array.isArray(jsonObj)) {
-              return objToOCHeader(jsonObj[0], prefix, baseClass, shouldNSCoding, shouldNSCopying);
+              return objToOCHeader(jsonObj[0], rootClass, surfix, shouldNSCoding, shouldNSCopying);
             }
 
             let lines = [];
 
-            let className = `${prefix}${uppercaseFirst(baseClass)}`;
+            let className = `${rootClass}${uppercaseFirst(surfix)}`;
 
             let protocal = '';
             if (shouldNSCoding) {
@@ -252,7 +252,7 @@ $(function () {
                 else if (typeof element === 'object') {
 
                   if (shortClassName) {
-                    className = prefix;
+                    className = rootClass;
                   }
                   let subClassName = `${className}${uppercaseFirst(key)}`;
                   if (Array.isArray(element)) {
@@ -275,11 +275,11 @@ $(function () {
 
             return linesOutput;
           }
-          let objToOCHeaderLines = (jsonObj, prefix, baseClass, haveComment, shouldNSCoding, shouldNSCopying, company, user) => {
+          let objToOCHeaderLines = (jsonObj, rootClass, surfix, haveComment, shouldNSCoding, shouldNSCopying, company, user) => {
             removeSurplusElement(jsonObj);
-            const headerLines = objToOCHeader(jsonObj, prefix, baseClass, shouldNSCoding, shouldNSCopying);
+            const headerLines = objToOCHeader(jsonObj, rootClass, surfix, shouldNSCoding, shouldNSCopying);
 
-            const comment = haveComment ? makeComment('h', prefix, baseClass, company, user) : '\r';
+            const comment = haveComment ? makeComment('h', rootClass, surfix, company, user) : '\r';
             return comment + '#import <Foundation/Foundation.h>\r\n\r\n' + headerLines;
           };
           //对象转Objective-C实现文件
