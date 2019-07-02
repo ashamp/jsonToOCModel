@@ -106,12 +106,17 @@ $(function () {
               if (key === 'id') {
                 return 'ID';
               }
-              let OCKeywords = ['alloc', 'new', 'copy', 'mutableCopy'];
+              //https://stackoverflow.com/questions/6327448/semantic-issue-propertys-synthesized-getter-follows-cocoa-naming-convention-fo
+              let OCKeywords = ['init', 'alloc', 'new', 'copy', 'mutableCopy'];
               for (var index = 0; index < OCKeywords.length; index++) {
                 var keyword = OCKeywords[index];
                 if (key.startsWith(keyword)) {
                   return `the${uppercaseFirst(key)}`;
                 }
+              }
+              let reservedKeywords = ["abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "default", "do", "double", "else", "enum", "extends", "false", "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while", "id", "class", "description"];
+              if (reservedKeywords.includes(key)) {
+                return `the${uppercaseFirst(key)}`;
               }
             }
             return key;
